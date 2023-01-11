@@ -1,43 +1,58 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 
 import Search from './Search';
 import Tablet from './Tablet';
+import Button from './Button';
 import { GlobalStyle } from './GlobalStyle';
+import fetchSearchTopStories from '../helpres/Server';
 import { Page, Interactions } from './App.styled';
-
-const DEFAULT_QUERY = 'redux';
-
-const PATH_BASE = 'https://hn.algolia.com/api/v1';
-const PATH_SEARCH = '/search';
-const PARAM_SEARCH = 'query=';
 
 function App() {
   const [listArr, setListArr] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(DEFAULT_QUERY);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(0);
+  const [result, setResult] = useState(null);
 
-  const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`;
+  useEffect(() => {
+    const news = fetchSearchTopStories(searchTerm, page);
+    if (!searchTerm) {
+      return;
+    }
 
-  // useEffect(() => {
-  //   axios.get(url).then((result) => setListArr(result.data.hits));
-  // }, [url]);
+    news.then((res) => setListArr((prev) => [...prev, ...res.hits]));
+    news.then((res) =>
+      setResult((prev) => {
+        const oldHits =
+          prev && prev[searchTerm] ? prev[searchTerm].hits : [];
 
-  const fetchSearchTopStories = () =>
-    axios.get(url).then((result) => setListArr(result.data.hits));
-
-  const onSearchSubmit = (event) => {
-    event.preventDefault();
-    fetchSearchTopStories();
-  };
+        return {
+          ...prev,
+          [searchTerm]: {
+            hits: [...oldHits, ...res.hits],
+            page,
+          },
+        };
+      })
+    );
+  }, [searchTerm, page]);
 
   const removeList = (id) => {
     const filterList = listArr.filter((item) => item.objectID !== id);
-    console.log(listArr);
+
     setListArr(filterList);
   };
 
-  const onSearchChange = (e) => {
-    setSearchTerm(e.target.value);
+  const onSearchSubmit = (value) => {
+    setSearchTerm(value);
+    setListArr([]);
+    setPage(0);
+  };
+
+  const loadMore = () => setPage((prev) => prev + 1);
+
+  const needsToSearchTopStories = (searchTerm) => {
+    setListArr(result[searchTerm].hits);
+    setPage(result[searchTerm].page);
   };
 
   return (
@@ -46,17 +61,16 @@ function App() {
       <Page>
         <Interactions>
           <Search
-            onSearchChange={onSearchChange}
-            value={searchTerm}
             onSubmit={onSearchSubmit}
+            needsToSearchTopStories={needsToSearchTopStories}
+            result={result}
           >
             Поиск
           </Search>
-          <Tablet
-            listArr={listArr}
-            searchTerm={searchTerm}
-            removeList={removeList}
-          />
+          <Tablet listArr={listArr} removeList={removeList} />
+          {listArr.length ? (
+            <Button onClick={() => loadMore()}>Больше историй</Button>
+          ) : null}
         </Interactions>
       </Page>
     </>

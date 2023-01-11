@@ -14,7 +14,8 @@ export const Btn = styled.button`
   padding: ${(p) =>
     p.stylesetting.padding ? p.stylesetting.padding : '10px'};
   border: none;
-  border-radius: 5px;
+  border-radius: ${(p) =>
+    p.stylesetting.padding ? p.stylesetting.borderRadius : '5px'};
   border: 1px solid #dddddd;
   -webkit-font-smoothing: inherit;
   text-align: inherit;

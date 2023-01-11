@@ -2,7 +2,7 @@ import Button from '../Button';
 import { Table, TableRow, Text } from './Tablet.styled';
 
 export default function Tablet({ listArr = [], removeList }) {
-  return (
+  return listArr.length ? (
     <Table>
       {listArr.map(
         ({
@@ -36,5 +36,5 @@ export default function Tablet({ listArr = [], removeList }) {
         )
       )}
     </Table>
-  );
+  ) : null;
 }
