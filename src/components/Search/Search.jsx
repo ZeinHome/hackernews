@@ -5,6 +5,7 @@ export default function Search({
   onSubmit,
   needsToSearchTopStories,
   result,
+  setNotFetch,
   children,
 }) {
   const [value, setValue] = useState('');
@@ -16,12 +17,18 @@ export default function Search({
   const handelSubmit = (e) => {
     e.preventDefault();
 
+    if (!value) {
+      return;
+    }
+
     if (result && result[value]) {
+      setValue('');
       return needsToSearchTopStories(value);
     }
 
     onSubmit(value);
     setValue('');
+    setNotFetch(false);
   };
 
   return (

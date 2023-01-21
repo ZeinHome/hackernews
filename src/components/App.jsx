@@ -12,18 +12,44 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(0);
   const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
+  const [notFetch, setNotFetch] = useState(false);
 
   useEffect(() => {
     const news = fetchSearchTopStories(searchTerm, page);
-    if (!searchTerm) {
+
+    news.then((res) => (!!res ? setError(false) : setError(true)));
+
+    if (!searchTerm || error || (notFetch && page === 0)) {
       return;
     }
 
-    news.then((res) => setListArr((prev) => [...prev, ...res.hits]));
     news.then((res) =>
       setResult((prev) => {
         const oldHits =
           prev && prev[searchTerm] ? prev[searchTerm].hits : [];
+
+        const newKeys = res?.hits.map((item) => item.objectID);
+
+        if (prev) {
+          const oldState = prev[searchTerm]?.hits.filter(
+            (item) => item !== newKeys?.includes(item.objectID)
+          );
+
+          const filters = prev[searchTerm]?.hits.filter((item) =>
+            newKeys?.includes(item.objectID)
+          );
+
+          if (filters?.length) {
+            return {
+              ...prev,
+              [searchTerm]: {
+                hits: [...oldState],
+                page,
+              },
+            };
+          }
+        }
 
         return {
           ...prev,
@@ -34,7 +60,12 @@ function App() {
         };
       })
     );
-  }, [searchTerm, page]);
+    if (notFetch) {
+      return;
+    }
+
+    news.then((res) => setListArr((prev) => [...prev, ...res?.hits]));
+  }, [searchTerm, page, error, notFetch]);
 
   const removeList = (id) => {
     const filterList = listArr.filter((item) => item.objectID !== id);
@@ -51,6 +82,8 @@ function App() {
   const loadMore = () => setPage((prev) => prev + 1);
 
   const needsToSearchTopStories = (searchTerm) => {
+    setSearchTerm(searchTerm);
+    setNotFetch(true);
     setListArr(result[searchTerm].hits);
     setPage(result[searchTerm].page);
   };
@@ -64,10 +97,25 @@ function App() {
             onSubmit={onSearchSubmit}
             needsToSearchTopStories={needsToSearchTopStories}
             result={result}
+            setNotFetch={setNotFetch}
           >
             Поиск
           </Search>
-          <Tablet listArr={listArr} removeList={removeList} />
+          {error ? (
+            <div
+              style={{
+                padding: '20px',
+                backgroundColor: '#f44336',
+                color: 'white',
+                marginTop: '30px',
+              }}
+            >
+              <strong>Danger!</strong> Indicates a dangerous or
+              potentially negative action.
+            </div>
+          ) : (
+            <Tablet listArr={listArr} removeList={removeList} />
+          )}
           {listArr.length ? (
             <Button onClick={() => loadMore()}>Больше историй</Button>
           ) : null}
