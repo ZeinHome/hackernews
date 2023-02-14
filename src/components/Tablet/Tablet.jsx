@@ -1,4 +1,6 @@
 import Button from '../Button';
+import PropTypes from 'prop-types';
+
 import { Table, TableRow, Text } from './Tablet.styled';
 
 export default function Tablet({ listArr = [], removeList }) {
@@ -38,3 +40,16 @@ export default function Tablet({ listArr = [], removeList }) {
     </Table>
   ) : null;
 }
+
+Tablet.propTypes = {
+  listArr: PropTypes.arrayOf(
+    PropTypes.shape({
+      objectID: PropTypes.string.isRequired,
+      author: PropTypes.string,
+      url: PropTypes.string,
+      num_comments: PropTypes.number,
+      points: PropTypes.number,
+    })
+  ).isRequired,
+  removeList: PropTypes.func.isRequired,
+};

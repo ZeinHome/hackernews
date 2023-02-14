@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 import Button from '../Button';
 
 export default function Search({
@@ -38,6 +39,7 @@ export default function Search({
         onChange={onSearchChange}
         value={value}
         placeholder="Wait..."
+        autoFocus={true}
       />
       <Button
         type="submit"
@@ -54,3 +56,11 @@ export default function Search({
     </form>
   );
 }
+
+Search.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  needsToSearchTopStories: PropTypes.func,
+  result: PropTypes.object,
+  setNotFetch: PropTypes.func,
+  children: PropTypes.node,
+};

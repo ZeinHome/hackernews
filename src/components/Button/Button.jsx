@@ -1,4 +1,5 @@
 import { Btn } from './Button.styed';
+import PropTypes from 'prop-types';
 
 export default function Button({
   onClick,
@@ -12,3 +13,10 @@ export default function Button({
     </Btn>
   );
 }
+
+Button.propTypes = {
+  onClick: PropTypes.func,
+  type: PropTypes.string,
+  styled: PropTypes.object,
+  children: PropTypes.node.isRequired,
+};

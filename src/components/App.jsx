@@ -60,6 +60,7 @@ function App() {
         };
       })
     );
+
     if (notFetch) {
       return;
     }
