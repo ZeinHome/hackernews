@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Search from './Search';
 import Tablet from './Tablet';
 import Button from './Button';
+import Loading from './Loading';
 import { GlobalStyle } from './GlobalStyle';
 import fetchSearchTopStories from '../helpres/Server';
 import { Page, Interactions } from './App.styled';
@@ -14,6 +15,7 @@ function App() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [notFetch, setNotFetch] = useState(false);
+  const [loding, setLoading] = useState(false);
 
   useEffect(() => {
     const news = fetchSearchTopStories(searchTerm, page);
@@ -23,6 +25,7 @@ function App() {
     if (!searchTerm || error || (notFetch && page === 0)) {
       return;
     }
+    setLoading(true);
 
     news.then((res) =>
       setResult((prev) => {
@@ -50,7 +53,7 @@ function App() {
             };
           }
         }
-
+        setLoading(false);
         return {
           ...prev,
           [searchTerm]: {
@@ -80,7 +83,9 @@ function App() {
     setPage(0);
   };
 
-  const loadMore = () => setPage((prev) => prev + 1);
+  const loadMore = () => {
+    setPage((prev) => prev + 1);
+  };
 
   const needsToSearchTopStories = (searchTerm) => {
     setSearchTerm(searchTerm);
@@ -102,7 +107,9 @@ function App() {
           >
             Поиск
           </Search>
-          {error ? (
+          {loding ? (
+            <Loading />
+          ) : error ? (
             <div
               style={{
                 padding: '20px',
@@ -117,7 +124,7 @@ function App() {
           ) : (
             <Tablet listArr={listArr} removeList={removeList} />
           )}
-          {listArr.length ? (
+          {loding ? null : listArr.length ? (
             <Button onClick={() => loadMore()}>Больше историй</Button>
           ) : null}
         </Interactions>
