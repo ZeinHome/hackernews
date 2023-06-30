@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/hackernews/static/js/main.b20c96a8.js",
+    "index.html": "/hackernews/index.html",
+    "main.b20c96a8.js.map": "/hackernews/static/js/main.b20c96a8.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.b20c96a8.js"
+  ]
+}
