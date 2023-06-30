@@ -14,7 +14,7 @@ export default function Loading() {
         position: 'absolute',
         transform: 'translate(-50%, -50%)',
         top: '50%',
-        left: '40%',
+        left: '47%',
       }}
     />
   );

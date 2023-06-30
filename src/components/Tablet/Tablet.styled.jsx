@@ -13,8 +13,14 @@ export const TableRow = styled.li`
   border: 1px solid #e3e3e3;
 `;
 
+export const Titles = styled.h2`
+  font-size: 24px;
+  line-height: 24px;
+  letter-spacing: 1.5px;
+  color: #fff;
+`;
+
 export const Text = styled.p`
-  width: ${(p) => (p.style.width ? p.style.width : '')};
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0 5px;

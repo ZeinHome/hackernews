@@ -1,11 +1,27 @@
 import Button from '../Button';
 import PropTypes from 'prop-types';
 
-import { Table, TableRow, Text } from './Tablet.styled';
+import { Table, TableRow, Titles, Text } from './Tablet.styled';
 
 export default function Tablet({ listArr = [], removeList }) {
   return listArr.length ? (
     <Table>
+      <TableRow style={{ background: '#000' }}>
+        <Titles style={{ width: '40%' }}>Title</Titles>
+        <Titles style={{ width: '30%' }}>author</Titles>
+        <Titles style={{ width: '20%' }}>Comments</Titles>
+        <Titles style={{ width: '10%' }}>Points</Titles>
+        <Titles
+          style={{
+            width: '10%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          Delet
+        </Titles>
+      </TableRow>
       {listArr.map(
         ({
           title,
